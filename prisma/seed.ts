@@ -46,7 +46,7 @@ function seedFromFiles() {
   // ------- SEED PRODUCT TABLE -------
   Papa.parse(productFile, {
     header: true,
-    dynamicTyping: true,
+    dynamicTyping: false,
     complete: async (results) => {
       const data = results.data;
       const uploadData = data.map((line: any) => {
@@ -54,15 +54,15 @@ function seedFromFiles() {
         const { partNum, name, categoryId, weight, productPK } = line;
         const searchName = name?.replace(/ \((?!.*\().*?\)/, "") || name;
         const isCoreProduct = coreProducts.find(
-          (coreProduct) => coreProduct.partNum.toString() === partNum.toString()
+          (coreProduct) => coreProduct.partNum === partNum
         );
         return {
-          partNum: partNum.toString(),
+          partNum: partNum,
           name,
-          categoryId,
-          weight,
+          categoryId: categoryId || "MISCELLANEOUS",
+          weight: parseFloat(weight),
           coreProduct: isCoreProduct ? true : false,
-          productPK,
+          productPK: parseInt(productPK),
           searchName,
         };
       });
