@@ -9,12 +9,12 @@ export default async function handler(
   res: NextApiResponse
 ) {
   console.log(req.headers.origin);
-  if (
-    req.headers.origin !== "https://amp.reynoldsam.com" &&
-    req.headers.origin !== "https://ram-bam-us-web-qa.azurewebsites.net"
-  ) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
+  // if (
+  //   req.headers.origin !== "https://amp.reynoldsam.com" &&
+  //   req.headers.origin !== "https://ram-bam-us-web-qa.azurewebsites.net"
+  // ) {
+  //   return res.status(401).json({ message: "Unauthorized" });
+  // }
 
   const products = await prisma.product.findMany({
     where: {
