@@ -13,25 +13,24 @@ datasource db {
 }
 
 // User model for Supabase auth
-model User {
-  id    String  @unique @db.Uuid // this lets the supabase.auth schema match
-  email String  @unique
-  name  String?
-  posts Post[]
+model Product {
+  partNum     String   @id @unique @map("part_num")
+  name        String
+  searchName  String   @map("search_name")
+  weight      Float
+  coreProduct Boolean  @default(false) @map("core_product")
+  productPK   Int      @map("product_pk")
+  category    Category @relation(fields: [categoryId], references: [categoryId])
+  categoryId  String   @map("category_id")
 
-  @@map("users")
+  @@map("products")
 }
 
 // Define your models here
-model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String?  @db.Uuid
-  author    User?    @relation(fields: [authorId], references: [id])
+model Category {
+  categoryId String    @id @unique @map("category_id")
+  months     Int
+  Product    Product[]
 
-  @@map("posts")
+  @@map("categories")
 }
