@@ -35,5 +35,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-#cypress
+# cypress
 /cypress/videos
+
+# Prisma seed data
+/prisma/data/*.data.csv
