@@ -1,7 +1,7 @@
 import Cors from "cors";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import prisma from "@/lib/prisma";
+import { getResults } from "@/lib/api/search/search";
 
 const cors = Cors({
   methods: ["GET", "HEAD"],
@@ -33,18 +33,17 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log(req.headers.origin);
-
   await runMiddleware(req, res, cors);
 
-  const products = await prisma.product.findMany({
-    where: {
-      coreProduct: true,
-    },
-    include: {
-      category: true,
-    },
-  });
+  const { q } = req.query;
+  if (!q) return res.status(400).json({ error: "No query provided" });
+
+  if (typeof q !== "string")
+    return res.status(400).json({ error: "Query must be a string" });
+
+  // send products to fuse to filter out based on query
+  const products = await getResults(q);
+
   const response = {
     data: {
       products,
