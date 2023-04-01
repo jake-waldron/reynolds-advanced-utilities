@@ -39,15 +39,14 @@ export default async function handler(
   // if (!q) return res.status(400).json({ data: { error: "No query provided" } });
 
   if (typeof q !== "string")
-    return res.status(400).json({ data: { error: "Query must be a string" } });
+    return res.status(400).json({ error: "Query must be a string" });
 
   // send products to fuse to filter out based on query
   const products = await getResults(q);
 
   const response = {
-    data: {
-      products,
-    },
+    searchTerm: q,
+    products,
   };
 
   return res.status(200).json(response);
