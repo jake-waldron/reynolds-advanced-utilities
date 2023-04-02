@@ -23,14 +23,14 @@ type emailData = {
 async function sendEmail(requestInfo: emailData) {
   const { searchTerm, apiResponse, feedbackType, issue } = requestInfo;
   const transporter = nodemailer.createTransport({
-    host: "smtp.zoho.com",
-    port: 465,
+    host: process.env.EMAIL_HOST,
+    port: process.env.EMAIL_PORT,
     secure: true,
     auth: {
-      user: "info@reynoldsadvancedutilities.com",
-      pass: "w#vGst4b",
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
     },
-  });
+  } as nodemailer.TransportOptions);
 
   await transporter.sendMail({
     from: '"Info" <info@reynoldsadvancedutilities.com>', // sender address
