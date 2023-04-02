@@ -24,7 +24,7 @@ async function sendEmail(requestInfo: emailData) {
   const { searchTerm, apiResponse, feedbackType, issue } = requestInfo;
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
+    port: 465,
     secure: true,
     auth: {
       user: process.env.EMAIL_USER,
@@ -35,7 +35,7 @@ async function sendEmail(requestInfo: emailData) {
   await transporter.sendMail({
     from: '"Info" <info@reynoldsadvancedutilities.com>', // sender address
     to: "jakewaldron+ram@gmail.com", // list of receivers
-    subject: feedbackType, // Subject line
+    subject: `${feedbackType} - "${searchTerm}"`, // Subject line
     text: `Feedback Type: ${feedbackType}\n\nSearch Term: "${searchTerm}"\n\nIssue: ${issue}\n\nAPI Response: ${JSON.stringify(
       apiResponse
     )}
@@ -66,12 +66,20 @@ export default async function handler(
   res: NextApiResponse
 ) {
   await runMiddleware(req, res, cors);
+  console.log("request!");
 
   if (req.method === "POST") {
     const requestInfo = req.body as emailData;
 
-    await sendEmail(requestInfo);
-    return res.status(200).json({ message: "email sent!" });
+    try {
+      console.log("sending email!");
+      await sendEmail(requestInfo);
+      console.log("email sent!");
+      return res.status(200).json({ message: "email sent!" });
+    } catch (error) {
+      console.log("error sending email", error);
+      return res.status(500).json({ error: "error sending email" });
+    }
   }
 
   return res.status(400).json({ error: "invalid request" });
