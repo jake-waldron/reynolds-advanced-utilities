@@ -33,10 +33,10 @@ async function sendEmail(requestInfo: emailData) {
   } as nodemailer.TransportOptions);
 
   await transporter.sendMail({
-    from: '"Info" <info@reynoldsadvancedutilities.com>', // sender address
+    from: '"Search Feedback" <info@reynoldsadvancedutilities.com>', // sender address
     to: "jakewaldron+ram@gmail.com", // list of receivers
     subject: `${feedbackType} - "${searchTerm}"`, // Subject line
-    text: `Feedback Type: ${feedbackType}\n\nSearch Term: "${searchTerm}"\n\nIssue: ${issue}\n\nAPI Response: ${JSON.stringify(
+    text: `Feedback Type: ${feedbackType}\n\nIssue: ${issue}\n\nSearch Term: "${searchTerm}"\n\nAPI Response: ${JSON.stringify(
       apiResponse
     )}
     `,
