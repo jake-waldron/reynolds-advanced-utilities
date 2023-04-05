@@ -9,7 +9,7 @@ const digits: Record<string, number> = {
   X: 10,
 };
 
-export function fixRomanNumerals(productName: string) {
+export function convertRomanNumerals(productName: string) {
   const romanNumeralMatch = productName.match(
     /(?<!\S)(III|IV|V|VI|VII|VIII|IX|X)(?!\S)/
   );
