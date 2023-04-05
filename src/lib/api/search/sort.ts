@@ -5,17 +5,27 @@ type Product = {
 };
 
 function sort(arrayToSort: Product[]): Product[][] {
-  const scores = arrayToSort.map((product: Product) => product.score);
-
-  const scoreSet = new Set(scores);
-
-  const groupedByScore = [...scoreSet].map((score: number) => {
-    return arrayToSort.filter((product: Product) => product.score === score);
+  // make's sure they're in order by score
+  const sortedByScore = arrayToSort.sort((p1, p2) => {
+    return p1.score - p2.score;
   });
 
+  // gets scores
+  const scores = sortedByScore.map((product: Product) => product.score);
+
+  // removes duplicates
+  const scoreSet = new Set(scores);
+
+  // groups by score
+  const groupedByScore = [...scoreSet].map((score: number) => {
+    return sortedByScore.filter((product: Product) => product.score === score);
+  });
+
+  // sorts each group
   const sortedArray = groupedByScore.map((group: Product[]) =>
     sortArray(group)
   );
+
   return sortedArray;
 }
 
