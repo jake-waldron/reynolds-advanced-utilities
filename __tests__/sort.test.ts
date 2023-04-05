@@ -192,4 +192,48 @@ describe("sortBySize", () => {
       "MOLD STAR 30 5-GAL PART A",
     ]);
   });
+
+  it("should sort by groups", () => {
+    const arrayToSort = [
+      {
+        name: "MOLD STAR 30 5-GAL",
+        partNum: "34343",
+        score: 0.29,
+      },
+      {
+        name: "MOLD STAR 30 1-GAL",
+        partNum: "34343",
+        score: 0.29,
+      },
+      {
+        name: "MOLD STAR 30 TRIAL SIZE",
+        partNum: "34343",
+        score: 0.29,
+      },
+      {
+        name: "MOLD STAR 20 5-GAL",
+        partNum: "34343",
+        score: 0.1,
+      },
+      {
+        name: "MOLD STAR 20 1-GAL",
+        partNum: "34343",
+        score: 0.1,
+      },
+      {
+        name: "MOLD STAR 20 PINT UNIT",
+        partNum: "34343",
+        score: 0.1,
+      },
+    ];
+
+    expect(sortBySize(arrayToSort).map((product) => product.name)).toEqual([
+      "MOLD STAR 20 PINT UNIT",
+      "MOLD STAR 20 1-GAL",
+      "MOLD STAR 20 5-GAL",
+      "MOLD STAR 30 TRIAL SIZE",
+      "MOLD STAR 30 1-GAL",
+      "MOLD STAR 30 5-GAL",
+    ]);
+  });
 });
