@@ -117,7 +117,7 @@ async function seedFromFiles() {
   const pmcs = await prisma.product.findMany({
     where: {
       name: {
-        startsWith: "PMC-",
+        startsWith: "PMC",
       },
     },
   });
