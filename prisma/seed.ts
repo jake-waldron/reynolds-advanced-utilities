@@ -2,11 +2,10 @@ import { Category, Prisma, Product } from "@prisma/client";
 import fs from "fs";
 import Papa from "papaparse";
 
-import { convertRomanNumerals } from "@/lib/utils/converRomanNumerals";
-import { fixPMCName } from "@/lib/utils/fixPMCname";
-import { removeParens } from "@/lib/utils/removeParens";
-
 import { prisma } from "../src/lib/prisma";
+import { convertRomanNumerals } from "../src/lib/utils/converRomanNumerals";
+import { fixPMCName } from "../src/lib/utils/fixPMCname";
+import { removeParens } from "../src/lib/utils/removeParens";
 
 type CoreProductCsvData = {
   partNum: string;
@@ -69,7 +68,13 @@ async function seedFromFiles() {
         .filter((product) => product.vendor === "SMOOTH-ON")
         .map((line): Product => {
           const { partNum, name, categoryId, weight, productPK } = line;
-          const searchName = removeParens(name);
+          let searchName = removeParens(name);
+          if (searchName.startsWith("FLEX FOAM-IT!")) {
+            searchName = convertRomanNumerals(searchName);
+          }
+          if (searchName.startsWith("PMC")) {
+            searchName = fixPMCName(searchName);
+          }
           const isCoreProduct = coreProducts.find(
             (coreProduct) => coreProduct.partNum === partNum
           );
@@ -87,52 +92,6 @@ async function seedFromFiles() {
         data: uploadData,
       } as Prisma.ProductCreateManyArgs);
     },
-  });
-
-  // ------- UPDATE SEARCH NAMES -------
-  // update Flex foams (convert roman numerals to numbers)
-  // update PMC (remove "-" and "DRY")
-
-  const flexFoams = await prisma.product.findMany({
-    where: {
-      name: {
-        startsWith: "FLEX FOAM-IT!",
-      },
-    },
-  });
-
-  flexFoams.forEach(async (product) => {
-    const { searchName, partNum } = product;
-
-    await prisma.product.update({
-      where: {
-        partNum,
-      },
-      data: {
-        searchName: convertRomanNumerals(searchName),
-      },
-    });
-  });
-
-  const pmcs = await prisma.product.findMany({
-    where: {
-      name: {
-        startsWith: "PMC",
-      },
-    },
-  });
-
-  pmcs.forEach(async (product) => {
-    const { searchName, partNum } = product;
-
-    await prisma.product.update({
-      where: {
-        partNum,
-      },
-      data: {
-        searchName: fixPMCName(searchName),
-      },
-    });
   });
 }
 
