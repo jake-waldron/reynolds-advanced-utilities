@@ -1,5 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
 import Fuse from "fuse.js";
 
 import prisma from "@/lib/prisma";
@@ -12,6 +10,12 @@ type FuseResults = {
     partNum: string;
   };
   score: number;
+};
+
+type ProductSearchResult = {
+  name: string;
+  score: number;
+  partNum: string;
 };
 
 export async function getResults(query: string) {
@@ -61,14 +65,14 @@ function filterResults(results: FuseResults[]) {
   return filteredResults(results);
 }
 
-function checkForGaps(results) {
+function checkForGaps(results: ProductSearchResult[]): ProductSearchResult[] {
   const scores = getScores(results);
-  if (scores.at(-1) <= 0.1) return results;
+  if (scores.at(-1)! <= 0.1) return results;
   if (scores.length <= 1 || results.length <= 3) {
     return results;
   }
-  if (scores.at(-1) - scores[0] < 0.05) return results;
-  const returnedResults = [];
+  if (scores.at(-1)! - scores[0] < 0.05) return results;
+  const returnedResults: ProductSearchResult[] = [];
   // there's still something weird here I think
   scores.forEach((score, index) => {
     if (index === 0) return;
@@ -80,13 +84,13 @@ function checkForGaps(results) {
   return Array.from(new Set(returnedResults));
 }
 
-function getScores(results: FuseResults[]) {
+function getScores(results: FuseResults[] | ProductSearchResult[]) {
   return Array.from(new Set(results.map((result) => result.score))).sort(
     (a, b) => a - b
   );
 }
 
-function filteredResults(results) {
+function filteredResults(results: FuseResults[]): ProductSearchResult[] {
   return results.map((result) => {
     return {
       name: result.item.name,
