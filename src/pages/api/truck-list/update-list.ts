@@ -9,9 +9,6 @@ const cors = Cors({
   origin: [
     "https://amp.reynoldsam.com",
     "https://ram-bam-us-web-qa.azurewebsites.net",
-    "https://www.google.com",
-    "http://localhost:3000",
-    "*",
   ],
 });
 
