@@ -118,15 +118,12 @@ export default async function handler(
       return res.status(200).json({ message: "Added to list" });
     }
 
-    // if it's already in the list, return a 406
-    // if it's not in the list, add it and return a 200
-
-    if (notionQueryResponse.results.length > 0) {
-      return res.status(200).json({ message: "Already on list" });
-    }
     if (notionQueryResponse.results.length === 0) {
       await addProduct(product, addedBy);
       return res.status(200).json({ message: "Added to list" });
+    }
+    if (notionQueryResponse.results.length > 0) {
+      return res.status(200).json({ message: "Already on list" });
     }
   } catch (error) {
     return res.status(400).json({ message: "Error adding product", error });
